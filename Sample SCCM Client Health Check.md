@@ -18,4 +18,3 @@ Describing Configuration Manager Health Check Analysis
     [+] Check ConfigMgr Client SMS_Client Class WMI 27ms
     [+] Check WMI Status 367ms
     
-    #
