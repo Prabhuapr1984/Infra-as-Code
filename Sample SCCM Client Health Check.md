@@ -17,3 +17,5 @@ Describing Configuration Manager Health Check Analysis
     [+] Check Admin$ Share Accessible 22ms
     [+] Check ConfigMgr Client SMS_Client Class WMI 27ms
     [+] Check WMI Status 367ms
+    
+    #
