@@ -1,3 +1,9 @@
+Configuration RenameAcoount
+{
+
+Node Localhost
+{
+
 Script RenameAdminAccount            
       {
         GetScript = 
@@ -43,3 +49,5 @@ Script RenameAdminAccount
 		    return $bolResult   
          }  
       }
+   }
+}
