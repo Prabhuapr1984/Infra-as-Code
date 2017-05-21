@@ -9,6 +9,8 @@ switch ($Env:ComputerName)
 {
     {$psitem -like "IIS*"} {$ServerRoles += 'IISWeb'}
     {$psitem -like "APP*"} {$ServerRoles += 'AppGeneric'}
+    {$psitem -like "SQL*"} {$ServerRoles += 'SQL'}
+
     Default {$ServerRoles += 'AppGeneric'}
 }
 
