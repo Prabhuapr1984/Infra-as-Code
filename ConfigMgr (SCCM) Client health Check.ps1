@@ -1,7 +1,7 @@
 Configuration CCMClientHealthCheck
 {
 
-    Import-DscResource –ModuleName 'PSDesiredStateConfiguration'
+    Import-DscResource -ModuleName 'PSDesiredStateConfiguration'
 
     Node localhost
     {
@@ -147,11 +147,64 @@ Configuration CCMClientHealthCheck
                 ValueData = "False"
                 DependsOn = "[Registry]EnableDCOM"
             }
+
+        Script DisableSMB1Protocol
+        {
+            DependsOn = "[Registry]ProvisioningMode"
+            GetScript = 
+            {
+                [System.String]$strResult = 'OK'
+                if ((Get-WindowsOptionalFeature -Online -FeatureName SMB1Protocol).State -eq $Disabled)         
+			    {
+				    # Set the result
+				    $strResult = 'NOK'
+			    }
+			
+			    # Return the result array
+			    return @{
+				    Result = $strResult
+			    }  
+            }
+
+            SetScript = 
+            {
+			    
+			    if ((Get-WindowsOptionalFeature -Online -FeatureName SMB1Protocol).State -eq $Disabled) 
+			    {
+                   (Disable-WindowsOptionalFeature -Online -FeatureName 'smb1protocol')
+                }
+            }
+
+            TestScript = 
+            {
+			    # Declare and define variables
+			    [System.Boolean]$bolResult = $true
+
+			    # Check if filter is already configured
+			    if ((Get-WindowsOptionalFeature -Online -FeatureName SMB1Protocol).State -eq $Disabled) 
+			    {
+                    # Set the result
+                    $bolResult = $false
+                }
+			
+			    # Return the result
+			    return  $bolResult
+            }
+        }
+
+        Registry LanManServerSMB1
+        {
+          Ensure = "Present"
+          Key = "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters"
+          ValueName = "SMB1"
+          ValueData = "0"
+          DependsOn = "[Script]DisableSMB1Protocol"
         }
     }
+}
 
 CCMClientHealthCheck -OutputPath C:\Temp
 
-Start-DscConfiguration -path C:\temp -Force -Verbose -wait
+#Start-DscConfiguration -path C:\temp -Force -Verbose -wait
 
 
